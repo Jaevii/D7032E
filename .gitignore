@@ -5,5 +5,5 @@
 
 *.log
 
-bin/ltu/
+bin
 coveragereport
