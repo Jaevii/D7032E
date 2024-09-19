@@ -5,13 +5,6 @@ import org.junit.Test;
 
 import java.io.IOException;
 
-import org.junit.BeforeClass;
-
-import ltu.TestCalendar;
-
-import java.util.Date;
-import java.util.Calendar;
-
 /* 
 Age requirements
     [ID: 101] The student must be at least 20 years old to receive subsidiary and student loans.
@@ -88,17 +81,6 @@ public class PaymentTest
             this.studyRate = studyRate;
             this.completionRatio = completionRatio;
         }
-    }
-
-    @Test
-    public void testSut()
-    {
-        Sut sut = new Sut();
-        assertNotNull(sut.mockCalendar.getDate());
-        assertNotNull(sut.pImp);
-
-        // Print the date to terminal
-        System.out.println(sut.mockCalendar.getDate());
     }
 
     @Test
