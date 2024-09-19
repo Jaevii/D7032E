@@ -1,6 +1,9 @@
 package ltu;
 
 import static org.junit.Assert.*;
+
+import org.junit.Before;
+import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.IOException;
@@ -52,49 +55,97 @@ public class PaymentTest
     public static final int LOAN_PART = 3564;
     public static final int SUBSIDY_PART = 1396;
     public static final int MAX_INCOME_PART = 128722;
-
+    public TestCalendar mockCalendar;
+    public PaymentImpl pImp;
     // System-under-test class
-    public class Sut {
-
-        public Sut() {
-            mockCalendar = new TestCalendar();
-            try {
-                pImp = new PaymentImpl(mockCalendar);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        public TestCalendar mockCalendar;
-        public PaymentImpl pImp;
-    }
     
-    // Person class for testing, used to store test people
-    public class Person{
-        public String personId;
-        public int income;
-        public int studyRate;
-        public int completionRatio;
-        
-        public Person(String personId, int income, int studyRate, int completionRatio){
-            this.personId = personId;
-            this.income = income;
-            this.studyRate = studyRate;
-            this.completionRatio = completionRatio;
+    
+    @Before
+    public void Sut() {
+        mockCalendar = new TestCalendar();
+        try {
+            pImp = new PaymentImpl(mockCalendar);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-    @Test
+
+
+    // Age requirements
+
+    @Test //1
     public void testAgeFullLoanInRange()
     {
-        //For full loan we want to accept a age gap between 20 and 46 (they are not allowed from 47)
-        Sut sut = new Sut();
+        // Test the age requirements In Range adn On Border Range For:
+        //[ID: 101] 
+        //[ID: 103] 
 
         // Define the ages to be tested in range and on border range
-        String[] ages = {"19800101-1111","19960101-1111","19960101-1111","19810101-1111","19860101-1111","19920101-1111"};
-
+        String[] ages = {"19700101-1111","19960101-1111","19960101-1111","19810101-1111","19860101-1111","19920101-1111"};
+        
         // Check each age
         for (String age : ages) {
-            assertEquals(LOAN_FULL + SUBSIDY_FULL, sut.pImp.getMonthlyAmount(age, 0, 100, 51));
+            assertEquals(LOAN_FULL + SUBSIDY_FULL, pImp.getMonthlyAmount(age, 0, 100, 51));
+        }
+    }
+
+    @Test //2
+    public void testAgeSubsidyInRange(){
+        // Test the age requirements In Range and On Border Range For:
+        //[ID: 102]
+        //[ID: 103]
+
+        String[] ages = {"19690101-1111","19660101-1111","19640101-1111","19620101-1111","19600101-1111"};
+
+        for (String age : ages) {
+            assertEquals(SUBSIDY_FULL, pImp.getMonthlyAmount(age, 0, 100, 51));
+        }
+    }
+
+    @Test //3
+    public void testAgeNoLoanOutofRange(){
+        // Test the age requirements Out of Range For:
+        //[ID: 101]
+        //[ID: 102]
+        //[ID: 103]
+
+        String[] ages = {"20000101-1111","19990101-1111","19520101-1111","19510101-1111","19590101-1111"};
+
+        for (String age : ages) {
+            assertEquals(0, pImp.getMonthlyAmount(age, 0, 100, 51));
+        }
+    }
+
+    // Study pace requirements
+
+    @Test //4
+    public void testStudyPaceInRange(){
+        // Test the study pace requirements In Range and On Border Range For:
+        //[ID: 201]
+        //[ID: 202]
+        //[ID: 203]
+
+        int[] studyRate = {50, 51,67,70, 99};
+
+        for (int study : studyRate) {
+            assertEquals(LOAN_PART + SUBSIDY_PART, pImp.getMonthlyAmount("19960101-1111", 0, study, 51));
+        }
+
+        assertEquals(LOAN_FULL + SUBSIDY_FULL, pImp.getMonthlyAmount("19960101-1111", 0, 100, 51));
+    }
+
+    @Test //5
+    public void testStudyPaceOutOfRange(){
+        // Test the study pace requirements Out of Range For:
+        //[ID: 201]
+        //[ID: 202]
+        //[ID: 203]
+
+        int[] studyRate = {0,20,30,40,49};
+
+        for (int study : studyRate) {
+            assertEquals(0, pImp.getMonthlyAmount("19960101-1111", 0, study, 51));
         }
     }
 }
