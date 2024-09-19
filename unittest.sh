@@ -5,6 +5,9 @@ else
     SEP=";"
 fi
 
+# Clear terminal
+clear
+
 # Compile code and tests
 echo "Compiling code..."
 javac -d ./bin -cp ./src ./src/ltu/Main.java ./src/ltu/CalendarImpl.java
