@@ -1,12 +1,11 @@
 package ltu;
 
 import static org.junit.Assert.*;
-
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
-
 import java.io.IOException;
+import java.util.Date;
+import java.util.Calendar;
 
 /* 
 Age requirements
@@ -75,23 +74,21 @@ public class PaymentTest
     // Age requirements
 
     @Test //1
-    public void testAgeFullLoanInRange()
+    public void ageFullLoanInRange()
     {
         // Test the age requirements In Range adn On Border Range For:
         //[ID: 101] 
         //[ID: 103] 
 
-        // Define the ages to be tested in range and on border range
         String[] ages = {"19700101-1111","19960101-1111","19960101-1111","19810101-1111","19860101-1111","19920101-1111"};
         
-        // Check each age
         for (String age : ages) {
             assertEquals(LOAN_FULL + SUBSIDY_FULL, pImp.getMonthlyAmount(age, 0, 100, 51));
         }
     }
 
     @Test //2
-    public void testAgeSubsidyInRange(){
+    public void ageSubsidyInRange(){
         // Test the age requirements In Range and On Border Range For:
         //[ID: 102]
         //[ID: 103]
@@ -104,7 +101,7 @@ public class PaymentTest
     }
 
     @Test //3
-    public void testAgeNoLoanOutofRange(){
+    public void ageNoLoanOutofRange(){
         // Test the age requirements Out of Range For:
         //[ID: 101]
         //[ID: 102]
@@ -120,7 +117,7 @@ public class PaymentTest
     // Study pace requirements
 
     @Test //4
-    public void testStudyPaceInRange(){
+    public void studyPaceInRange(){
         // Test the study pace requirements In Range and On Border Range For:
         //[ID: 201]
         //[ID: 202]
@@ -136,7 +133,7 @@ public class PaymentTest
     }
 
     @Test //5
-    public void testStudyPaceOutOfRange(){
+    public void studyPaceOutOfRange(){
         // Test the study pace requirements Out of Range For:
         //[ID: 201]
         //[ID: 202]
@@ -148,4 +145,88 @@ public class PaymentTest
             assertEquals(0, pImp.getMonthlyAmount("19960101-1111", 0, study, 51));
         }
     }
+
+    @Test //6
+    public void incomeFullInRange(){
+        // Test the income requirements In Range and On Border Range For:
+        //[ID: 301]
+        //[ID: 302]
+
+        int[] income = {85813, 85812, 80000, 70000, 50000};
+
+        for (int inc : income) {
+            assertEquals(LOAN_FULL + SUBSIDY_FULL, pImp.getMonthlyAmount("19960101-1111", inc, 100, 51));
+        }
+
+        int[] income2 = {128722, 128721, 120000, 100000, 80000};
+        for (int inc : income2) {
+            assertEquals(LOAN_PART + SUBSIDY_PART, pImp.getMonthlyAmount("19960101-1111", inc, 85, 51));
+        }
+    }
+
+    @Test //7
+    public void incomeFullOutOfRange(){
+        // Test the income requirements Out of Range For:
+        //[ID: 301]
+        //[ID: 302]
+
+        int[] income = {85814, 90000, 100000, 200000, 300000};
+
+        for (int inc : income) {
+            assertEquals(0, pImp.getMonthlyAmount("19960101-1111", inc, 100, 51));
+        }
+
+        int[] income2 = {128723, 130000, 150000, 200000, 300000};
+        for (int inc : income2) {
+            assertEquals(0, pImp.getMonthlyAmount("19960101-1111", inc, 85, 51));
+        }
+    }
+
+    @Test //8
+    public void completionRationInRange(){
+        // Test the completion ratio requirements In Range and On Border Range For:
+        //[ID: 401]
+
+        int[] completion = {50, 51, 60, 70, 80, 90, 100};
+
+        for (int comp : completion) {
+            assertEquals(LOAN_FULL + SUBSIDY_FULL, pImp.getMonthlyAmount("19960101-1111", 0, 100, comp));
+        }
+    }
+
+    @Test //9
+    public void completionRationOutOfRange(){
+        // Test the completion ratio requirements Out of Range For:
+        //[ID: 401]
+
+        int[] completion = {0, 10, 20, 30, 40, 49};
+
+        for (int comp : completion) {
+            assertEquals(0, pImp.getMonthlyAmount("19960101-1111", 0, 100, comp));
+        }
+    }
+
+    @Test //10
+    public void paymentDate(){
+        // Test the payment date requirements For:
+        //[ID: 506]
+
+        
+
+        //Saturday
+        Date dateSat = new Date(1454112000000L); 
+        mockCalendar.setDate(dateSat); 
+
+        System.out.println(mockCalendar.getDate());
+
+        assertEquals("20160129", pImp.getNextPaymentDay());
+        
+        //Sunday
+        // Date dateSun = new Date(1454198400000L);
+        // mockCalendar.setDate(dateSun);
+
+        // assertEquals("20160129", pImp.getNextPaymentDay());
+        
+    }
+
 }

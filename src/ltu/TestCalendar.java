@@ -10,7 +10,7 @@ public class TestCalendar implements ICalendar {
         return this.date2016;
     }
 
-    private void setDate(Date date) {
+    public void setDate(Date date) {
         this.date2016 = date;
     }
 }
