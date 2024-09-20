@@ -216,16 +216,37 @@ public class PaymentTest
         //Saturday
         Date dateSat = new Date(1454112000000L); 
         mockCalendar.setDate(dateSat); 
-
-        System.out.println(mockCalendar.getDate());
+        try {
+            pImp = new PaymentImpl(mockCalendar);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         assertEquals("20160129", pImp.getNextPaymentDay());
         
+        
         //Sunday
-        // Date dateSun = new Date(1454198400000L);
-        // mockCalendar.setDate(dateSun);
+        Date dateSun = new Date(1454198400000L);
+        mockCalendar.setDate(dateSun);
+        try {
+            pImp = new PaymentImpl(mockCalendar);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        // assertEquals("20160129", pImp.getNextPaymentDay());
+        assertEquals("20160129", pImp.getNextPaymentDay());
+        
+    }
+
+    @Test //11
+    public void invalidInputInRange(){
+        // Test the invalid input requirements In Range and On Border Range For:
+        
+        String[] personID = {"119960101-1111","1990101-1111","19960101-1111 "," 19960101-1111","hejjag heter-1111","199601011111"};
+
+        for (String id : personID) {
+            assertEquals("Invalid input.", pImp.getMonthlyAmount(id, 0, 100, 51));
+        }
         
     }
 
