@@ -206,36 +206,31 @@ public class PaymentTest
         }
     }
 
-    @Test //10
-    public void paymentDate(){
+    @Test //11
+    public void paymentDate()
+    {
         // Test the payment date requirements For:
-        //[ID: 506]
+        // [ID: 506] Student loans and subsidiary is paid on the last weekday (Monday to Friday) every month.
 
-        
+        Calendar cal = Calendar.getInstance();
 
-        //Saturday
-        Date dateSat = new Date(1454112000000L); 
-        mockCalendar.setDate(dateSat); 
-        try {
-            pImp = new PaymentImpl(mockCalendar);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        // Weekday (February)
+        cal.set(2016, Calendar.FEBRUARY, 13);
+        mockCalendar.setDate(cal.getTime());
 
-        assertEquals("20160129", pImp.getNextPaymentDay());
-        
-        
-        //Sunday
-        Date dateSun = new Date(1454198400000L);
-        mockCalendar.setDate(dateSun);
-        try {
-            pImp = new PaymentImpl(mockCalendar);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        assertEquals("20160229", pImp.getNextPaymentDay());
+
+        // Saturday (April)
+        cal.set(2016, Calendar.APRIL, 13);
+        mockCalendar.setDate(cal.getTime());
+
+        assertEquals("20160429", pImp.getNextPaymentDay());
+
+        // Sunday (January)
+        cal.set(2016, Calendar.JANUARY, 13);
+        mockCalendar.setDate(cal.getTime());
 
         assertEquals("20160129", pImp.getNextPaymentDay());
-        
     }
 
     @Test //11
