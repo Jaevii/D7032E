@@ -4,7 +4,6 @@ import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 import java.io.IOException;
-import java.util.Date;
 import java.util.Calendar;
 
 /* 
@@ -56,9 +55,9 @@ public class PaymentTest
     public static final int MAX_INCOME_PART = 128722;
     public TestCalendar mockCalendar;
     public PaymentImpl pImp;
+
+    
     // System-under-test class
-    
-    
     @Before
     public void Sut() {
         mockCalendar = new TestCalendar();
