@@ -239,15 +239,84 @@ public class PaymentTest
     }
 
     @Test //11
-    public void invalidInputInRange(){
+    public void invalidIDInputInRange(){
         // Test the invalid input requirements In Range and On Border Range For:
         
         String[] personID = {"119960101-1111","1990101-1111","19960101-1111 "," 19960101-1111","hejjag heter-1111","199601011111"};
 
         for (String id : personID) {
-            assertEquals("Invalid input.", pImp.getMonthlyAmount(id, 0, 100, 51));
+            try {
+                pImp.getMonthlyAmount(id, 0, 100, 51);
+            } catch (IllegalArgumentException e) {
+                assertEquals("Invalid personId: "+id, e.getMessage());
+                return; 
+            }
+            fail("Expected IllegalArgumentException was not thrown");
         }
-        
     }
 
+
+    @Test //12
+    public void invalidStudyRateInput() {
+        // Test invalid study rate inputs
+        int[] invalidStudyRates = {-10, -1, -4, -40};
+
+        for (int studyRate : invalidStudyRates) {
+            try {
+                pImp.getMonthlyAmount("19960101-1111", 0, studyRate, 51);
+            } catch (IllegalArgumentException e) {
+                assertEquals("Invalid input.", e.getMessage());
+                continue; 
+            }
+            fail("Expected IllegalArgumentException was not thrown for study rate: " + studyRate);
+        }
+    }
+
+    @Test //13
+    public void invalidIncomeInput() {
+        // Test invalid income inputs
+        int[] invalidIncomes = {-1000, -1, -11};
+
+        for (int income : invalidIncomes) {
+            try {
+                pImp.getMonthlyAmount("19960101-1111", income, 100, 51);
+            } catch (IllegalArgumentException e) {
+                
+                assertEquals("Invalid input.", e.getMessage());
+                continue; 
+            }
+            fail("Expected IllegalArgumentException was not thrown for income: " + income);
+        }
+    }
+
+    @Test //14
+    public void invalidCompletionRatioInput() {
+        // Test invalid completion ratio inputs
+        int[] invalidCompletionRatios = {-10, -1, -4, -50};
+
+        for (int completionRatio : invalidCompletionRatios) {
+            try {
+                pImp.getMonthlyAmount("19960101-1111", 0, 100, completionRatio);
+            } catch (IllegalArgumentException e) {
+                
+                assertEquals("Invalid input.", e.getMessage());
+                continue; 
+            }
+            fail("Expected IllegalArgumentException was not thrown for completion ratio: " + completionRatio);
+        }
+    }
+
+    @Test //15
+    public void invalidIDInput() {
+        // Test invalid ID inputs
+        
+        try {
+            pImp.getMonthlyAmount(null, 0, 100, 51);
+        } catch (IllegalArgumentException e) {
+            assertEquals("Invalid input.", e.getMessage());
+            return; 
+        }
+        fail("Expected IllegalArgumentException was not thrown for date: " );
+        
+    }
 }
