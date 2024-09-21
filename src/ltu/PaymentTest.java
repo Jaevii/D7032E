@@ -54,7 +54,8 @@ public class PaymentTest
     public static final int SUBSIDY_PART = 1396;
     public static final int MAX_INCOME_PART = 128722;
     public TestCalendar mockCalendar;
-    public PaymentImplErrorCode pImp;
+    public PaymentImpl pImp;
+    //public PaymentImplErrorCode pImp;
 
     
     // System-under-test class
@@ -62,15 +63,15 @@ public class PaymentTest
     public void Sut() {
         mockCalendar = new TestCalendar();
         try {
-            pImp = new PaymentImplErrorCode(mockCalendar);
+            pImp = new PaymentImpl(mockCalendar);
+            //pImp = new PaymentImplErrorCode(mockCalendar);
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
 
-
-    // Age requirements
+    //#region Age requirements
 
     @Test //1
     public void ageFullLoanInRange()
@@ -79,11 +80,67 @@ public class PaymentTest
         //[ID: 101] 
         //[ID: 103] 
 
-        String[] ages = {"19700101-1111","19960101-1111","19960101-1111","19810101-1111","19860101-1111","19920101-1111"};
+        String[] ages = {"19700101-1111","19960101-1111","19810101-1111","19860101-1111","19920101-1111"};
         
         for (String age : ages) {
             assertEquals(LOAN_FULL + SUBSIDY_FULL, pImp.getMonthlyAmount(age, 0, 100, 51));
         }
+    }
+
+    @Test //1.1
+    public void personAged19()
+    {
+        String age = "19970101-1111";
+        
+        assertEquals(0, pImp.getMonthlyAmount(age, 0, 100, 51));
+        
+    }
+
+    @Test //1.2
+    public void personAged20()
+    {
+        String age = "19960101-1111";
+        
+        assertEquals(LOAN_FULL + SUBSIDY_FULL, pImp.getMonthlyAmount(age, 0, 100, 51));
+        
+    }
+
+    @Test //1.3
+    public void personAged46()
+    {
+        String age = "19700101-1111";
+        
+        assertEquals(LOAN_FULL + SUBSIDY_FULL, pImp.getMonthlyAmount(age, 0, 100, 51));
+        
+    }
+
+    @Test //1.4
+    public void personAged47()
+    {
+        String age = "19690101-1111";
+        
+        assertEquals(SUBSIDY_FULL, pImp.getMonthlyAmount(age, 0, 100, 51));
+        
+    }
+
+    @Test //1.5
+    public void personAged56()
+    {
+        String age = "19600101-1111";
+        
+        assertEquals(SUBSIDY_FULL, pImp.getMonthlyAmount(age, 0, 100, 51));
+        
+    }
+
+    @Test //1.6
+    public void personAged57()
+    {
+        //[ID: 103] 
+
+        String age = "19590101-1111";
+        
+        assertEquals(0, pImp.getMonthlyAmount(age, 0, 100, 51));
+        
     }
 
     @Test //2
@@ -113,7 +170,9 @@ public class PaymentTest
         }
     }
 
-    // Study pace requirements
+    //#endregion Age requirements
+
+    //#region Study pace requirements
 
     @Test //4
     public void studyPaceInRange(){
@@ -144,6 +203,10 @@ public class PaymentTest
             assertEquals(0, pImp.getMonthlyAmount("19960101-1111", 0, study, 51));
         }
     }
+
+    //#endregion Study pace requirements
+
+    //#region Income requirements
 
     @Test //6
     public void incomeFullInRange(){
@@ -181,6 +244,10 @@ public class PaymentTest
         }
     }
 
+    //#endregion Income requirements
+
+    //#region Competion requirements
+
     @Test //8
     public void completionRationInRange(){
         // Test the completion ratio requirements In Range and On Border Range For:
@@ -204,6 +271,8 @@ public class PaymentTest
             assertEquals(0, pImp.getMonthlyAmount("19960101-1111", 0, 100, comp));
         }
     }
+
+    //#endregion Competion requirements
 
     @Test //11
     public void paymentDate()
@@ -231,6 +300,8 @@ public class PaymentTest
 
         assertEquals("20160129", pImp.getNextPaymentDay());
     }
+
+    //#region Invalid input
 
     @Test //11
     public void invalidIDInputInRange(){
@@ -313,4 +384,6 @@ public class PaymentTest
         fail("Expected IllegalArgumentException was not thrown for date: " );
         
     }
+
+    //#endregion Invalid input
 }

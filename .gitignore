@@ -9,3 +9,4 @@ jacoco.exec
 
 bin/ltu/*
 coveragereport
+jacoco.exec
