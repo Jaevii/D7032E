@@ -54,7 +54,7 @@ public class PaymentTest
     public static final int SUBSIDY_PART = 1396;
     public static final int MAX_INCOME_PART = 128722;
     public TestCalendar mockCalendar;
-    public PaymentImpl pImp;
+    public PaymentImplErrorCode pImp;
 
     
     // System-under-test class
@@ -62,7 +62,7 @@ public class PaymentTest
     public void Sut() {
         mockCalendar = new TestCalendar();
         try {
-            pImp = new PaymentImpl(mockCalendar);
+            pImp = new PaymentImplErrorCode(mockCalendar);
         } catch (IOException e) {
             e.printStackTrace();
         }
